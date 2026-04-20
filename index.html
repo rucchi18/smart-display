@@ -1,20 +1,120 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0032)http://127.0.0.1:5500/index.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <style>
-        body { background-color: #000; color: #fff; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        body { background-color: black;
+             background-size: cover;
+             background-position: center;
+             background-attachment: fixed;
+             transition: background-image 1.5s ease-in-out;
+             color: #ffffff;
+              text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
+             margin: 0; 
+             display: flex;
+             justify-content: center; 
+             align-items: center; 
+             height: 100vh;
+             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
         h1 { font-size: 8rem; }
+            /* containerの中身を縦並びにする */
+.container {
+    text-align: center;
+}
+
+h1 { 
+    font-size: 8rem; 
+    margin: 0; /* 余計な隙間を消す */
+    position: relative;
+    left: 0px;
+    top: 0px;
+}
+
+#date {
+    font-size: 2.5rem; /* 時計より小さめに */
+    margin-top: 10px;
+    text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
+    font-weight: 300; /* 少し細くするとオシャレ */
+    position: relative;
+    left: 10px;
+    top: 0px;
+}
     </style>
 </head>
-<body>
-    <h1 id="clock">00:00</h1>
-    <script>
+<body style="background-image: url(&quot;4.jpg&quot;);">
+    <div class="contaier">
+         <h1 id="clock">20:04</h1>
+         <p id="date">2026.04.20 MON</p>
+    </div>
+   <script>
         function update() {
             const n = new Date();
-            document.getElementById('clock').textContent = n.getHours().toString().padStart(2,'0') + ":" + n.getMinutes().toString().padStart(2,'0');
+            document.getElementById('clock').textContent = n.getHours().toString().padStart(2,'0') + ":" +
+                                                           n.getMinutes().toString().padStart(2,'0');
+            document.getElementById('clock').textContent = time;
         }
+        //list of pictures
+        const images = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg','10.jpg']
+        let currentIndex = 0;
+        function changeBackground() {   //the function of change background image
+                document.body.style.backgroundImage = "url('" + images[currentIndex] + "')";
+                currentIndex = (currentIndex + 1) % images.length;
+        }
+        function updateClock() {    //the function of timer
+        const now = new Date();
+        const time = now.getHours().toString().padStart(2, '0') + ":" + 
+                     now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('clock').textContent = time;
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const date = now.getDate().toString().padStart(2, '0');
+        const daynames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+        const day = daynames[now.getDay()];
+        const datestring = `${year}.${month}.${date} ${day}`;
+        document.getElementById('date').textContent = datestring; 
+        }
+         updateClock();
+        changeBackground();
+        setInterval(changeBackground, 10000);
         setInterval(update, 1000); update();
     </script>
-</body>
-</html>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+</body></html>
