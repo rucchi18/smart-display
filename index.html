@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { background-color: #000; color: #fff; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+        h1 { font-size: 8rem; }
+    </style>
+</head>
+<body>
+    <h1 id="clock">00:00</h1>
+    <script>
+        function update() {
+            const n = new Date();
+            document.getElementById('clock').textContent = n.getHours().toString().padStart(2,'0') + ":" + n.getMinutes().toString().padStart(2,'0');
+        }
+        setInterval(update, 1000); update();
+    </script>
+</body>
+</html>
