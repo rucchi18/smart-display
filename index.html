@@ -7,7 +7,7 @@
              background-size: cover;
              background-position: center;
              background-attachment: fixed;
-             transition: background-image 1.5s ease-in-out;
+             transition: background-image 3.0s ease-in-out;
              color: #ffffff;
               text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
              margin: 0; 
@@ -21,7 +21,25 @@
 .container {
     text-align: center;
 }
+/* 背景レイヤーの共通設定 */
+.bg-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 3.5s ease-in-out; /* ここで「ぬるっと」具合を調整 */
+    z-index: -1; /* 文字の後ろに配置 */
+}
 
+/* 文字を背景より前に出すための設定 */
+.container {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
 h1 { 
     font-size: 8rem; 
     margin: 0; /* 余計な隙間を消す */
@@ -36,35 +54,58 @@ h1 {
     text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
     font-weight: 300; /* 少し細くするとオシャレ */
     position: relative;
-    left: 10px;
+    left: -5px;
     top: 0px;
 }
     </style>
 </head>
-<body style="background-image: url(&quot;4.jpg&quot;);">
-    <div class="contaier">
-         <h1 id="clock">20:04</h1>
-         <p id="date">2026.04.20 MON</p>
-    </div>
+<body style="background-image: url(&quot;1.jpg&quot;);">
+    <body>
+    <div id="bg1" class="bg-layer"></div>
+    <div id="bg2" class="bg-layer" style="opacity: 0;"></div>
+
+  <div class="container">
+    <h1 id="clock">
+        <span id="h">00</span><span id="dots">:</span><span id="m">00</span>
+    </h1>
+    <p id="date">0000.00.00 ---</p>
+</div>
    <script>
-        function update() {
-            const n = new Date();
-            document.getElementById('clock').textContent = n.getHours().toString().padStart(2,'0') + ":" +
-                                                           n.getMinutes().toString().padStart(2,'0');
-            document.getElementById('clock').textContent = time;
-        }
         //list of pictures
         const images = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg','10.jpg']
         let currentIndex = 0;
+        let activelayer = 1;
+
         function changeBackground() {   //the function of change background image
-                document.body.style.backgroundImage = "url('" + images[currentIndex] + "')";
-                currentIndex = (currentIndex + 1) % images.length;
+            const nextindex = (currentIndex + 1 ) % images.length;
+            const currentlayer = document.getElementById('bg'+ activelayer);
+            const nextlayer = document.getElementById('bg' + (activelayer === 1 ? 2 : 1));
+            nextlayer.style.backgroundImage = "url('" + images[currentIndex] + "')";
+            nextlayer.style.opacity = 1;
+            currentlayer.style.opacity = 0;
+            currentIndex = nextindex;
+            activelayer = (activelayer === 1 ? 2 : 1);
+            document.getElementById('bg1').style.backgroundImage = "url('" + images[0] + "')";
         }
         function updateClock() {    //the function of timer
         const now = new Date();
-        const time = now.getHours().toString().padStart(2, '0') + ":" + 
-                     now.getMinutes().toString().padStart(2, '0');
-        document.getElementById('clock').textContent = time;
+
+        const hourSpan = document.getElementById('h');
+        const minSpan = document.getElementById('m');
+        const dotSpan = document.getElementById('dots');
+        const dateElement = document.getElementById('date');
+        
+        const hours = now.getHours().toString().padStart(2, '0');
+        const mins = now.getMinutes().toString().padStart(2, '0');
+    
+        if (hourSpan) hourSpan.textContent = hours;
+        if (minSpan) minSpan.textContent = mins;
+
+       if (dotSpan) {
+        // 偶数秒なら見える(1)、奇数秒なら見えない(0)
+        dotSpan.style.opacity = (now.getSeconds() % 2 === 0) ? "1" : "0";
+    }
+       
         const year = now.getFullYear();
         const month = (now.getMonth() + 1).toString().padStart(2, '0');
         const date = now.getDate().toString().padStart(2, '0');
@@ -75,46 +116,7 @@ h1 {
         }
          updateClock();
         changeBackground();
-        setInterval(changeBackground, 600000);
-        setInterval(update, 1000); update();
+        setInterval(changeBackground, 10000);
+        setInterval(updateClock, 1000); update();
     </script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
-
 </body></html>
