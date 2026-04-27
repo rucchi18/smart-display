@@ -44,9 +44,12 @@ h1 {
     font-size: 8rem; 
     margin: 0; /* 余計な隙間を消す */
     font-weight: 50;
-    position: relative;
-    left: -500px;
-    top: -500px;
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    font-size: 10vw;    /* 画面の横幅に応じて大きさが変わる（大きすぎるなら 2vw 等に調整） */
+    min-font-size: 16px;
+    white-space: nowrap;
 }
 
 #date {
@@ -54,20 +57,26 @@ h1 {
     margin-top: 10px;
     text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
     font-weight: 300; /* 少し細くするとオシャレ */
-    position: relative;
-    left: -500px;
-    top: -520px;
+    position: absolute;
+    left: 5.3%;
+    top: 15%;
+    font-size: 3.2vw;    /* 画面の横幅に応じて大きさが変わる（大きすぎるなら 2vw 等に調整） */
+    min-font-size: 16px;
+    white-space: nowrap;
 }
 #weather-info{
+    
     font-size: 2.7rem; 
     margin-top: 10px;
     text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
     font-weight: 300; /* 少し細くするとオシャレ */
-    position: relative;
-    left: -150px;
-    top: 450px;
+    position: absolute;
+    left: 5%;
+    top: 70%;
+    font-size: 3vw;    /* 画面の横幅に応じて大きさが変わる（大きすぎるなら 2vw 等に調整） */
+    min-font-size: 16px;
     background-color: rgba(0,0,0,0.4);
-    padding: 10px 20px;
+    padding: 1.5vw 2.5vw;
     border-radius: 8px;
 }
     </style>
@@ -77,12 +86,11 @@ h1 {
     <div id="bg2" class="bg-layer" style="opacity: 0;"></div>
 
     <div id="weather-info"></div>
-
-  <div class="container">
     <h1 id="clock">
         <span id="h">00</span><span id="dots">:</span><span id="m">00</span>
     </h1>
     <p id="date">0000.00.00 ---</p>
+    <div class="container"></div>
 </div>
    <script>
     // 設定
