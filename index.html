@@ -36,7 +36,12 @@
 
 /* 文字を背景より前に出すための設定 */
 .container {
-    position: relative;
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    font-size: 10vw;    /* 画面の横幅に応じて大きさが変わる（大きすぎるなら 2vw 等に調整） */
+    min-font-size: 16px;
+    white-space: nowrap;
     z-index: 10;
     text-align: center;
 }
@@ -82,23 +87,26 @@ h1 {
     </style>
 </head>
 <body style="background-image: url(&quot;1.jpg&quot;);">
-    <div id="bg1" class="bg-layer"></div>
-    <div id="bg2" class="bg-layer" style="opacity: 0;"></div>
+    <div id="bg1" class="bg-layer" style="opacity: 0; background-image: url(&quot;1.jpg&quot;);"></div>
+    <div id="bg2" class="bg-layer" style="opacity: 1; background-image: url(&quot;1.jpg&quot;);"></div>
 
-    <div id="weather-info"></div>
+    <div id="weather-info">
+    <img src="./index_files/02n@2x.png" alt="weather icon" style="vertical-align: middle;">
+    <span>13°C / few clouds</span></div>
+   <div class="container"></div>
     <h1 id="clock">
-        <span id="h">00</span><span id="dots">:</span><span id="m">00</span>
+        <span id="h">23</span><span id="dots" style="opacity: 1;">:</span><span id="m">58</span>
     </h1>
-    <p id="date">0000.00.00 ---</p>
-    <div class="container"></div>
-</div>
+    <p id="date">2026.04.27 MON</p>
+    
+
    <script>
     // 設定
 const apiKey = '85baf70dd41eb221490832164fe4dfdb';
 const city = 'Chiba'; // 習志野市の場合。'Chiba'などでもOK
 
 async function getWeather() {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=ja`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=en`;
     
     try {
         const response = await fetch(url);
@@ -180,4 +188,42 @@ async function getWeather() {
         setInterval(changeBackground, 300000);
         setInterval(updateClock, 1000); update();
     </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body></html>
