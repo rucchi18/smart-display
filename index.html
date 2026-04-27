@@ -43,26 +43,40 @@
 h1 { 
     font-size: 8rem; 
     margin: 0; /* 余計な隙間を消す */
+    font-weight: 50;
     position: relative;
-    left: 0px;
-    top: 0px;
+    left: -500px;
+    top: -500px;
 }
 
 #date {
-    font-size: 2.5rem; /* 時計より小さめに */
+    font-size: 2.7rem; /* 時計より小さめに */
     margin-top: 10px;
     text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
     font-weight: 300; /* 少し細くするとオシャレ */
     position: relative;
-    left: -5px;
-    top: 0px;
+    left: -500px;
+    top: -520px;
+}
+#weather-info{
+    font-size: 2.7rem; 
+    margin-top: 10px;
+    text-shadow: 0px 0px 15px rgba(0,0,0,0.8);
+    font-weight: 300; /* 少し細くするとオシャレ */
+    position: relative;
+    left: -150px;
+    top: 450px;
+    background-color: rgba(0,0,0,0.4);
+    padding: 10px 20px;
+    border-radius: 8px;
 }
     </style>
 </head>
 <body style="background-image: url(&quot;1.jpg&quot;);">
-    <body>
     <div id="bg1" class="bg-layer"></div>
     <div id="bg2" class="bg-layer" style="opacity: 0;"></div>
+
+    <div id="weather-info"></div>
 
   <div class="container">
     <h1 id="clock">
@@ -71,6 +85,45 @@ h1 {
     <p id="date">0000.00.00 ---</p>
 </div>
    <script>
+    // 設定
+const apiKey = '85baf70dd41eb221490832164fe4dfdb';
+const city = 'Chiba'; // 習志野市の場合。'Chiba'などでもOK
+
+async function getWeather() {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=ja`;
+    
+    try {
+        const response = await fetch(url);
+        
+        // 1. まずは通信が成功したかチェック
+        if (!response.ok) {
+            // 401などの場合はここで処理を中断する
+            document.getElementById('weather-info').innerText = `エラー: ${response.status} (キー有効化待ちかも)`;
+            return; 
+        }
+
+        const data = await response.json();
+        
+        // 2. データが届いている場合のみ temp を読みに行く
+        if (data && data.main) {
+            const temp = Math.round(data.main.temp);
+            const desc = data.weather[0].description;
+            document.getElementById('weather-info').innerText = `${temp}°C / ${desc}`;
+            const icon = data.weather[0].icon;
+            const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+            document.getElementById('weather-info').innerHTML = `
+    <img src="${iconUrl}" alt="weather icon" style="vertical-align: middle;">
+    <span>${temp}°C / ${desc}</span>`;
+        }
+    } catch (error) {
+        console.error("通信に失敗しました", error);
+    }
+}
+
+// 初回実行と30分ごとの更新
+    getWeather();
+    setInterval(getWeather, 900000);
+
         //list of pictures
         const images = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg','8.jpg','9.jpg','10.jpg']
         let currentIndex = 0;
